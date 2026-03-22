@@ -1,0 +1,94 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "If you need help with the configuration have a look here: {documentation_url}",
+                "data": {
+                    "ip_address": "IP Address",
+                    "update_interval": "Update Interval (minutes)",
+                    "device_name": "Device Name",
+                    "area": "Area (optional)",
+                    "group_a_name": "Name for Group A",
+                    "group_b_name": "Name for Group B"
+                }
+            }
+        },
+        "error": {
+            "invalid_ip": "Invalid IP address format.",
+            "connection": "Unable to connect to the device.",
+            "unknown": "Unknown error occurred."
+        },
+        "abort": {
+            "already_configured": "This entry is already configured."
+        }
+    },
+    "entity": {
+        "button": {
+            "refresh": {
+                "name": "Refresh"
+            }
+        },
+        "sensor": {
+            "mode_a": {
+                "name": "Ventilation Mode Group A",
+                "state": {
+                    "off": "Off",
+                    "alternating_min": "Min - Alternating",
+                    "alternating_med": "Med - Alternating",
+                    "alternating_med_forced": "Med - Alternating (⚠️ Mode overridden)",
+                    "alternating_max": "Max - Alternating",
+                    "one_dir_med": "Med - One Direction",
+                    "one_dir_max": "Max - One Direction",
+                    "inside_med": "Med - Inside Only",
+                    "inside_max": "Max - Inside Only",
+                    "timed_off": "Off (⚠️ Timer overrode mode)",
+                    "unknown": "Unknown"
+                }
+            },
+            "mode_b": {
+                "name": "Ventilation Mode Group B",
+                "state": {
+                    "off": "Off",
+                    "alternating_min": "Min - Alternating",
+                    "alternating_med": "Med - Alternating",
+                    "alternating_med_forced": "Med - Alternating (⚠️ Mode overridden)",
+                    "alternating_max": "Max - Alternating",
+                    "one_dir_med": "Med - One Direction",
+                    "one_dir_max": "Max - One Direction",
+                    "inside_med": "Med - Inside Only",
+                    "inside_max": "Max - Inside Only",
+                    "timed_off": "Off (⚠️ Timer overrode mode)",
+                    "unknown": "Unknown"
+                }
+            }
+        },
+        "select": {
+            "mode_a": {
+                "name": "Ventilation Mode Group A",
+                "state": {
+                    "off": "Off",
+                    "alternating_min": "Min - Alternating",
+                    "alternating_med": "Med - Alternating",
+                    "alternating_max": "Max - Alternating",
+                    "one_dir_med": "Med - One Direction",
+                    "one_dir_max": "Max - One Direction",
+                    "inside_med": "Med - Inside Only",
+                    "inside_max": "Max - Inside Only"
+                }
+            },
+            "mode_b": {
+                "name": "Ventilation Mode Group B",
+                "state": {
+                    "off": "Off",
+                    "alternating_min": "Min - Alternating",
+                    "alternating_med": "Med - Alternating",
+                    "alternating_max": "Max - Alternating",
+                    "one_dir_med": "Med - One Direction",
+                    "one_dir_max": "Max - One Direction",
+                    "inside_med": "Med - Inside Only",
+                    "inside_max": "Max - Inside Only"
+                }
+            }
+        }
+    }
+}

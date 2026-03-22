@@ -1,0 +1,94 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Wenn du Hilfe bei der Konfiguration brauchst, schau hier: {documentation_url}",
+                "data": {
+                    "ip_address": "IP-Adresse",
+                    "update_interval": "Aktualisierungsintervall (Minuten)",
+                    "device_name": "Gerätename",
+                    "area": "Bereich (optional)",
+                    "group_a_name": "Name für Gruppe A",
+                    "group_b_name": "Name für Gruppe B"
+                }
+            }
+        },
+        "error": {
+            "invalid_ip": "Ungültiges IP-Adressformat.",
+            "connection": "Verbindung zum Gerät fehlgeschlagen.",
+            "unknown": "Ein unbekannter Fehler ist aufgetreten."
+        },
+        "abort": {
+            "already_configured": "Dieser Eintrag ist bereits konfiguriert."
+        }
+    },
+    "entity": {
+        "button": {
+            "refresh": {
+                "name": "Aktualisieren"
+            }
+        },
+        "sensor": {
+            "mode_a": {
+                "name": "Lüftungsmodus Gruppe A",
+                "state": {
+                    "off": "Aus",
+                    "alternating_min": "Min - Alternierend",
+                    "alternating_med": "Med - Alternierend",
+                    "alternating_med_forced": "Med - Alternierend (⚠️ Modus überschrieben)",
+                    "alternating_max": "Max - Alternierend",
+                    "one_dir_med": "Med - Eine Richtung",
+                    "one_dir_max": "Max - Eine Richtung",
+                    "inside_med": "Med - Nur nach innen",
+                    "inside_max": "Max - Nur nach innen",
+                    "timed_off": "Aus (⚠️ Timer hat Modus überschrieben)",
+                    "unknown": "Unbekannt"
+                }
+            },
+            "mode_b": {
+                "name": "Lüftungsmodus Gruppe B",
+                "state": {
+                    "off": "Aus",
+                    "alternating_min": "Min - Alternierend",
+                    "alternating_med": "Med - Alternierend",
+                    "alternating_med_forced": "Med - Alternierend (⚠️ Modus überschrieben)",
+                    "alternating_max": "Max - Alternierend",
+                    "one_dir_med": "Med - Eine Richtung",
+                    "one_dir_max": "Max - Eine Richtung",
+                    "inside_med": "Med - Nur nach innen",
+                    "inside_max": "Max - Nur nach innen",
+                    "timed_off": "Aus (⚠️ Timer hat Modus überschrieben)",
+                    "unknown": "Unbekannt"
+                }
+            }
+        },
+        "select": {
+            "mode_a": {
+                "name": "Lüftungsmodus Gruppe A",
+                "state": {
+                    "off": "Aus",
+                    "alternating_min": "Min - Alternierend",
+                    "alternating_med": "Med - Alternierend",
+                    "alternating_max": "Max - Alternierend",
+                    "one_dir_med": "Med - Eine Richtung",
+                    "one_dir_max": "Max - Eine Richtung",
+                    "inside_med": "Med - Nur nach innen",
+                    "inside_max": "Max - Nur nach innen"
+                }
+            },
+            "mode_b": {
+                "name": "Lüftungsmodus Gruppe B",
+                "state": {
+                    "off": "Aus",
+                    "alternating_min": "Min - Alternierend",
+                    "alternating_med": "Med - Alternierend",
+                    "alternating_max": "Max - Alternierend",
+                    "one_dir_med": "Med - Eine Richtung",
+                    "one_dir_max": "Max - Eine Richtung",
+                    "inside_med": "Med - Nur nach innen",
+                    "inside_max": "Max - Nur nach innen"
+                }
+            }
+        }
+    }
+}
