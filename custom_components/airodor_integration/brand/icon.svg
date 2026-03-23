@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Background circle with gradient -->
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="100%" stop-color="#0277BD"/>
+    </radialGradient>
+    <radialGradient id="hub" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E0F7FA"/>
+      <stop offset="100%" stop-color="#B0BEC5"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="128" cy="128" r="128" fill="url(#bg)"/>
+
+  <!-- Fan blade 1 (top-right) -->
+  <path d="M128 128 C128 128 145 90 170 75 C185 67 195 72 190 90 C183 112 155 120 128 128 Z"
+        fill="white" fill-opacity="0.92"/>
+
+  <!-- Fan blade 2 (bottom-right) -->
+  <path d="M128 128 C128 128 166 145 181 170 C189 185 184 195 166 190 C144 183 136 155 128 128 Z"
+        fill="white" fill-opacity="0.92"/>
+
+  <!-- Fan blade 3 (bottom-left) -->
+  <path d="M128 128 C128 128 111 166 86 181 C71 189 61 184 66 166 C73 144 101 136 128 128 Z"
+        fill="white" fill-opacity="0.92"/>
+
+  <!-- Fan blade 4 (top-left) -->
+  <path d="M128 128 C128 128 90 111 75 86 C67 71 72 61 90 66 C112 73 120 101 128 128 Z"
+        fill="white" fill-opacity="0.92"/>
+
+  <!-- Center hub -->
+  <circle cx="128" cy="128" r="22" fill="url(#hub)" stroke="white" stroke-width="3"/>
+  <circle cx="128" cy="128" r="10" fill="#0277BD" opacity="0.7"/>
+
+  <!-- Subtle air flow rings -->
+  <circle cx="128" cy="128" r="100" fill="none" stroke="white" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="8 6"/>
+  <circle cx="128" cy="128" r="118" fill="none" stroke="white" stroke-width="1" stroke-opacity="0.15" stroke-dasharray="5 8"/>
+</svg>

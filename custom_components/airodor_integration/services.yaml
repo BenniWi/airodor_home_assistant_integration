@@ -1,0 +1,3 @@
+refresh_data:
+  name: Daten aktualisieren
+  description: Aktualisiert die Daten vom Airodor-Gerät manuell.
