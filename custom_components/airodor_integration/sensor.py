@@ -11,14 +11,14 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
 
-from .entity import IntegrationBlueprintEntity
+from .entity import AirodorWifiEntity
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-    from .coordinator import BlueprintDataUpdateCoordinator
-    from .data import IntegrationBlueprintConfigEntry
+    from .coordinator import AirodorWifiDataUpdateCoordinator
+    from .data import AirodorWifiConfigEntry
 
 # Mapping from VentilationModeRead to option keys (same keys as select/translations)
 MODE_READ_TO_KEY = {
@@ -69,7 +69,7 @@ ENTITY_DESCRIPTIONS = (
 
 async def async_setup_entry(
     hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
-    entry: IntegrationBlueprintConfigEntry,
+    entry: AirodorWifiConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
@@ -82,12 +82,12 @@ async def async_setup_entry(
     )
 
 
-class AirodorModeSensor(IntegrationBlueprintEntity, SensorEntity):
+class AirodorModeSensor(AirodorWifiEntity, SensorEntity):
     """Sensor for Airodor ventilation mode."""
 
     def __init__(
         self,
-        coordinator: BlueprintDataUpdateCoordinator,
+        coordinator: AirodorWifiDataUpdateCoordinator,
         entity_description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""

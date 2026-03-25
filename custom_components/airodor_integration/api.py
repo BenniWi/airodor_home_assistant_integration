@@ -12,23 +12,23 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
 
-class IntegrationBlueprintApiClientError(Exception):
+class AirodorWifiApiClientError(Exception):
     """Exception to indicate a general API error."""
 
 
-class IntegrationBlueprintApiClientCommunicationError(
-    IntegrationBlueprintApiClientError,
+class AirodorWifiApiClientCommunicationError(
+    AirodorWifiApiClientError,
 ):
     """Exception to indicate a communication error."""
 
 
-class IntegrationBlueprintApiClientAuthenticationError(
-    IntegrationBlueprintApiClientError,
+class AirodorWifiApiClientAuthenticationError(
+    AirodorWifiApiClientError,
 ):
     """Exception to indicate an authentication error."""
 
 
-class IntegrationBlueprintApiClient:
+class AirodorWifiApiClient:
     """API Client for Airodor WiFi."""
 
     def __init__(
@@ -63,7 +63,7 @@ class IntegrationBlueprintApiClient:
             timer_b = await self._async_get_timer(airodor.VentilationGroup.B)
         except Exception as exception:
             msg = f"Error fetching data from Airodor device - {exception}"
-            raise IntegrationBlueprintApiClientCommunicationError(msg) from exception
+            raise AirodorWifiApiClientCommunicationError(msg) from exception
         else:
             return {
                 "mode_a": mode_a,
@@ -92,7 +92,7 @@ class IntegrationBlueprintApiClient:
             result = await self._async_set_mode(group, mode)
         except Exception as exception:
             msg = f"Error setting mode on Airodor device - {exception}"
-            raise IntegrationBlueprintApiClientCommunicationError(msg) from exception
+            raise AirodorWifiApiClientCommunicationError(msg) from exception
         else:
             return result
 
@@ -105,7 +105,7 @@ class IntegrationBlueprintApiClient:
             return await asyncio.to_thread(airodor.get_mode, self._ip_address, group)
         except Exception as exception:
             msg = f"Error getting mode from {self._ip_address} - {exception}"
-            raise IntegrationBlueprintApiClientCommunicationError(msg) from exception
+            raise AirodorWifiApiClientCommunicationError(msg) from exception
 
     async def _async_set_mode(
         self,
@@ -119,7 +119,7 @@ class IntegrationBlueprintApiClient:
             )
         except Exception as exception:
             msg = f"Error setting mode on {self._ip_address} - {exception}"
-            raise IntegrationBlueprintApiClientCommunicationError(msg) from exception
+            raise AirodorWifiApiClientCommunicationError(msg) from exception
 
     async def _async_get_timer(
         self,
@@ -130,4 +130,4 @@ class IntegrationBlueprintApiClient:
             return await asyncio.to_thread(airodor.get_timer, self._ip_address, group)
         except Exception as exception:
             msg = f"Error getting timer from {self._ip_address} - {exception}"
-            raise IntegrationBlueprintApiClientCommunicationError(msg) from exception
+            raise AirodorWifiApiClientCommunicationError(msg) from exception
