@@ -6,14 +6,14 @@ from typing import TYPE_CHECKING
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 
-from .entity import IntegrationBlueprintEntity
+from .entity import AirodorWifiEntity
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-    from .coordinator import BlueprintDataUpdateCoordinator
-    from .data import IntegrationBlueprintConfigEntry
+    from .coordinator import AirodorWifiDataUpdateCoordinator
+    from .data import AirodorWifiConfigEntry
 
 
 ENTITY_DESCRIPTION = ButtonEntityDescription(
@@ -25,7 +25,7 @@ ENTITY_DESCRIPTION = ButtonEntityDescription(
 
 async def async_setup_entry(
     hass: HomeAssistant,  # noqa: ARG001
-    entry: IntegrationBlueprintConfigEntry,
+    entry: AirodorWifiConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the button platform."""
@@ -39,12 +39,12 @@ async def async_setup_entry(
     )
 
 
-class AirodorRefreshButton(IntegrationBlueprintEntity, ButtonEntity):
+class AirodorRefreshButton(AirodorWifiEntity, ButtonEntity):
     """Button to trigger a manual data refresh."""
 
     def __init__(
         self,
-        coordinator: BlueprintDataUpdateCoordinator,
+        coordinator: AirodorWifiDataUpdateCoordinator,
         entity_description: ButtonEntityDescription,
     ) -> None:
         """Initialize the button."""

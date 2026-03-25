@@ -11,9 +11,9 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
 from .api import (
-    IntegrationBlueprintApiClient,
-    IntegrationBlueprintApiClientCommunicationError,
-    IntegrationBlueprintApiClientError,
+    AirodorWifiApiClient,
+    AirodorWifiApiClientCommunicationError,
+    AirodorWifiApiClientError,
 )
 from .const import (
     CONF_AREA,
@@ -31,7 +31,7 @@ from .const import (
 )
 
 
-class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class AirodorWifiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Airodor Integration."""
 
     VERSION = 1
@@ -39,9 +39,9 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
-    ) -> BlueprintOptionsFlowHandler:
+    ) -> AirodorWifiOptionsFlowHandler:
         """Create the options flow for reconfiguration."""
-        return BlueprintOptionsFlowHandler(config_entry)
+        return AirodorWifiOptionsFlowHandler(config_entry)
 
     async def async_step_user(
         self,
@@ -57,10 +57,10 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             except UnicodeError as exception:
                 LOGGER.warning(exception)
                 _errors["base"] = "invalid_ip"
-            except IntegrationBlueprintApiClientCommunicationError as exception:
+            except AirodorWifiApiClientCommunicationError as exception:
                 LOGGER.error(exception)
                 _errors["base"] = "connection"
-            except IntegrationBlueprintApiClientError as exception:
+            except AirodorWifiApiClientError as exception:
                 LOGGER.exception(exception)
                 _errors["base"] = "unknown"
             else:
@@ -157,14 +157,14 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             raise UnicodeError(msg) from exception
 
         # Test connectivity
-        client = IntegrationBlueprintApiClient(
+        client = AirodorWifiApiClient(
             ip_address=ip_address,
             session=async_create_clientsession(self.hass),
         )
         await client.async_get_data()
 
 
-class BlueprintOptionsFlowHandler(config_entries.OptionsFlow):
+class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
     """Options flow for Airodor Integration (allows reconfiguration)."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:

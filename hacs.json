@@ -1,5 +1,5 @@
 {
-    "name": "Integration blueprint",
+    "name": "Airodor Wifi Integration",
     "homeassistant": "2026.3.2",
     "hacs": "2.0.5"
 }

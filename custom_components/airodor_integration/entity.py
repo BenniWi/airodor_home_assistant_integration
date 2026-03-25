@@ -1,4 +1,4 @@
-"""BlueprintEntity class."""
+"""AirodorWifiEntity class."""
 
 from __future__ import annotations
 
@@ -8,22 +8,22 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import ATTRIBUTION, CONF_AREA, CONF_DEVICE_NAME, DEFAULT_DEVICE_NAME
-from .coordinator import BlueprintDataUpdateCoordinator
+from .coordinator import AirodorWifiDataUpdateCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.components.select import SelectEntityDescription
     from homeassistant.components.sensor import SensorEntityDescription
 
 
-class IntegrationBlueprintEntity(CoordinatorEntity[BlueprintDataUpdateCoordinator]):
-    """BlueprintEntity class."""
+class AirodorWifiEntity(CoordinatorEntity[AirodorWifiDataUpdateCoordinator]):
+    """AirodorWifiEntity class."""
 
     _attr_attribution = ATTRIBUTION
     entity_description: SensorEntityDescription | SelectEntityDescription
 
     def __init__(
         self,
-        coordinator: BlueprintDataUpdateCoordinator,
+        coordinator: AirodorWifiDataUpdateCoordinator,
         entity_description: SensorEntityDescription
         | SelectEntityDescription
         | None = None,

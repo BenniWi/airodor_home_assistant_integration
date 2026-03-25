@@ -1,4 +1,4 @@
-"""Custom types for integration_blueprint."""
+"""Custom types for airodor_integration."""
 
 from __future__ import annotations
 
@@ -9,17 +9,17 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.loader import Integration
 
-    from .api import IntegrationBlueprintApiClient
-    from .coordinator import BlueprintDataUpdateCoordinator
+    from .api import AirodorWifiApiClient
+    from .coordinator import AirodorWifiDataUpdateCoordinator
 
 
-type IntegrationBlueprintConfigEntry = ConfigEntry[IntegrationBlueprintData]
+type AirodorWifiConfigEntry = ConfigEntry[AirodorWifiData]
 
 
 @dataclass
-class IntegrationBlueprintData:
-    """Data for the Blueprint integration."""
+class AirodorWifiData:
+    """Data for the Airodor Wifi integration."""
 
-    client: IntegrationBlueprintApiClient
-    coordinator: BlueprintDataUpdateCoordinator
+    client: AirodorWifiApiClient
+    coordinator: AirodorWifiDataUpdateCoordinator
     integration: Integration
