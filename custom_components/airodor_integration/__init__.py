@@ -18,10 +18,12 @@ from .api import AirodorWifiApiClient
 from .const import (
     CONF_GROUP_A_NAME,
     CONF_GROUP_B_NAME,
-    CONF_IP_ADDRESS,
+    CONF_HOST,
+    CONF_PORT,
     CONF_UPDATE_INTERVAL,
     DEFAULT_GROUP_A_NAME,
     DEFAULT_GROUP_B_NAME,
+    DEFAULT_PORT,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
     LOGGER,
@@ -35,7 +37,9 @@ if TYPE_CHECKING:
     from .data import AirodorWifiConfigEntry
 
 PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.NUMBER,
     Platform.SENSOR,
     Platform.SELECT,
 ]
@@ -64,7 +68,8 @@ async def async_setup_entry(
     coordinator.group_b_name = group_b_name
     entry.runtime_data = AirodorWifiData(
         client=AirodorWifiApiClient(
-            ip_address=entry.data[CONF_IP_ADDRESS],
+            host=entry.data[CONF_HOST],
+            port=entry.data.get(CONF_PORT, DEFAULT_PORT),
             session=async_get_clientsession(hass),
         ),
         integration=async_get_loaded_integration(hass, entry.domain),

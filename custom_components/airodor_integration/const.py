@@ -6,12 +6,15 @@ LOGGER: Logger = getLogger(__package__)
 
 DOMAIN = "airodor_integration"
 ATTRIBUTION = "Data provided by Limodor Airodor WiFi"
-CONF_IP_ADDRESS = "ip_address"
+CONF_HOST = "host"
+CONF_PORT = "port"
 CONF_UPDATE_INTERVAL = "update_interval"
 CONF_GROUP_A_NAME = "group_a_name"
 CONF_GROUP_B_NAME = "group_b_name"
 CONF_DEVICE_NAME = "device_name"
 CONF_AREA = "area"
+TIMER_GRACE_PERIOD_SECONDS = 30
+DEFAULT_PORT = 80
 DEFAULT_UPDATE_INTERVAL = 30
 DEFAULT_GROUP_A_NAME = "Group A"
 DEFAULT_GROUP_B_NAME = "Group B"

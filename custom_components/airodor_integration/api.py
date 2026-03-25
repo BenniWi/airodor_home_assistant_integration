@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import ipaddress
 from typing import TYPE_CHECKING, Any
 
 from airodor_wifi_api import airodor
@@ -33,18 +32,21 @@ class AirodorWifiApiClient:
 
     def __init__(
         self,
-        ip_address: str,
+        host: str,
+        port: int,
         session: ClientSession,
     ) -> None:
         """
         Initialize API Client.
 
         Args:
-            ip_address: IP address of the Airodor WiFi device
+            host: Hostname or IP address of the Airodor WiFi device
+            port: TCP port of the device (default 80)
             session: aiohttp ClientSession
 
         """
-        self._ip_address = ipaddress.ip_address(ip_address)
+        self._host = host
+        self._port = port
         self._session = session
 
     async def async_get_data(self) -> dict[str, Any]:
@@ -56,11 +58,29 @@ class AirodorWifiApiClient:
 
         """
         try:
-            # Get mode for both groups
+            # Get mode for both groups first
             mode_a = await self._async_get_mode(airodor.VentilationGroup.A)
             mode_b = await self._async_get_mode(airodor.VentilationGroup.B)
-            timer_a = await self._async_get_timer(airodor.VentilationGroup.A)
-            timer_b = await self._async_get_timer(airodor.VentilationGroup.B)
+            # Only fetch timer when the device is actually in TIMED_OFF mode,
+            # matching the reference web app behaviour and avoiding unneeded requests.
+            timer_a = (
+                await self._async_get_timer(airodor.VentilationGroup.A)
+                if mode_a
+                in (
+                    airodor.VentilationModeRead.TIMED_OFF,
+                    airodor.VentilationModeRead.TIMED_OFF_UNKNOWN,
+                )
+                else None
+            )
+            timer_b = (
+                await self._async_get_timer(airodor.VentilationGroup.B)
+                if mode_b
+                in (
+                    airodor.VentilationModeRead.TIMED_OFF,
+                    airodor.VentilationModeRead.TIMED_OFF_UNKNOWN,
+                )
+                else None
+            )
         except Exception as exception:
             msg = f"Error fetching data from Airodor device - {exception}"
             raise AirodorWifiApiClientCommunicationError(msg) from exception
@@ -102,9 +122,11 @@ class AirodorWifiApiClient:
     ) -> airodor.VentilationModeRead:
         """Get current mode for a group."""
         try:
-            return await asyncio.to_thread(airodor.get_mode, self._ip_address, group)
+            return await asyncio.to_thread(
+                airodor.get_mode, self._host, self._port, group
+            )
         except Exception as exception:
-            msg = f"Error getting mode from {self._ip_address} - {exception}"
+            msg = f"Error getting mode from {self._host}:{self._port} - {exception}"
             raise AirodorWifiApiClientCommunicationError(msg) from exception
 
     async def _async_set_mode(
@@ -115,10 +137,10 @@ class AirodorWifiApiClient:
         """Set mode for a group."""
         try:
             return await asyncio.to_thread(
-                airodor.set_mode, self._ip_address, group, mode
+                airodor.set_mode, self._host, self._port, group, mode
             )
         except Exception as exception:
-            msg = f"Error setting mode on {self._ip_address} - {exception}"
+            msg = f"Error setting mode on {self._host}:{self._port} - {exception}"
             raise AirodorWifiApiClientCommunicationError(msg) from exception
 
     async def _async_get_timer(
@@ -127,7 +149,33 @@ class AirodorWifiApiClient:
     ) -> int | None:
         """Get timer value for a group."""
         try:
-            return await asyncio.to_thread(airodor.get_timer, self._ip_address, group)
+            return await asyncio.to_thread(
+                airodor.get_timer, self._host, self._port, group
+            )
         except Exception as exception:
-            msg = f"Error getting timer from {self._ip_address} - {exception}"
+            msg = f"Error getting timer from {self._host}:{self._port} - {exception}"
+            raise AirodorWifiApiClientCommunicationError(msg) from exception
+
+    async def async_set_timer(
+        self,
+        group: airodor.VentilationGroup,
+        hours: int,
+    ) -> bool:
+        """
+        Set the run timer for a ventilation group.
+
+        Args:
+            group: Ventilation group (A or B)
+            hours: Number of hours the device should run before turning off
+
+        Returns:
+            True if successful
+
+        """
+        try:
+            return await asyncio.to_thread(
+                airodor.set_timer, self._host, self._port, group, hours
+            )
+        except Exception as exception:
+            msg = f"Error setting timer on Airodor device - {exception}"
             raise AirodorWifiApiClientCommunicationError(msg) from exception

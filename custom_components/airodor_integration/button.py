@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
+from homeassistant.const import EntityCategory
 
 from .entity import AirodorWifiEntity
 
@@ -20,6 +21,7 @@ ENTITY_DESCRIPTION = ButtonEntityDescription(
     key="refresh",
     icon="mdi:refresh",
     name="Aktualisieren",
+    entity_category=EntityCategory.CONFIG,
 )
 
 
