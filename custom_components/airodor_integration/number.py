@@ -31,7 +31,7 @@ ENTITY_DESCRIPTIONS = (
         translation_key="set_timer_a",
         device_class=NumberDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.HOURS,
-        native_min_value=1,
+        native_min_value=0,
         native_max_value=12,
         native_step=1,
         mode=NumberMode.BOX,
@@ -42,7 +42,7 @@ ENTITY_DESCRIPTIONS = (
         translation_key="set_timer_b",
         device_class=NumberDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.HOURS,
-        native_min_value=1,
+        native_min_value=0,
         native_max_value=12,
         native_step=1,
         mode=NumberMode.BOX,
@@ -105,6 +105,10 @@ class AirodorTimerNumber(AirodorWifiEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         """Set the timer: device will run for the given number of hours."""
         hours = int(value)
+        if hours == 0:
+            self._attr_native_value = 0
+            self.async_write_ha_state()
+            return
         key = self.entity_description.key
         group = (
             airodor.VentilationGroup.A
