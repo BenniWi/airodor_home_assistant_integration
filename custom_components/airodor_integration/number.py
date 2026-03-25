@@ -75,7 +75,7 @@ class AirodorTimerNumber(AirodorWifiEntity, NumberEntity):
     ) -> None:
         """Initialize the number entity."""
         super().__init__(coordinator, entity_description)
-        self._attr_native_value: float | None = None
+        self._attr_native_value: float | None = entity_description.native_min_value
         self._pending_clear = False
 
     @property
@@ -96,9 +96,9 @@ class AirodorTimerNumber(AirodorWifiEntity, NumberEntity):
         return self._attr_native_value
 
     def _handle_coordinator_update(self) -> None:
-        """Handle coordinator updates — keep the field cleared if pending."""
+        """Handle coordinator updates — reset to min value if pending."""
         if self._pending_clear:
-            self._attr_native_value = None
+            self._attr_native_value = self.entity_description.native_min_value
             self._pending_clear = False
         super()._handle_coordinator_update()
 
@@ -124,8 +124,8 @@ class AirodorTimerNumber(AirodorWifiEntity, NumberEntity):
         else:
             self.coordinator.timer_b_set_at = now
             self.coordinator.timer_b_set_value = float(hours)
-        # Clear the input field and flag so coordinator callback keeps it clear
-        self._attr_native_value = None
+        # Reset to min value and flag so coordinator callback keeps it reset
+        self._attr_native_value = self.entity_description.native_min_value
         self._pending_clear = True
         self.async_write_ha_state()
         await self.coordinator.async_request_refresh()
