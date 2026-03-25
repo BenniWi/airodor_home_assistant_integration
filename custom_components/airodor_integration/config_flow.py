@@ -38,10 +38,10 @@ class AirodorWifiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
+        _config_entry: config_entries.ConfigEntry,
     ) -> AirodorWifiOptionsFlowHandler:
         """Create the options flow for reconfiguration."""
-        return AirodorWifiOptionsFlowHandler(config_entry)
+        return AirodorWifiOptionsFlowHandler()
 
     async def async_step_user(
         self,
@@ -166,10 +166,6 @@ class AirodorWifiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
     """Options flow for Airodor Integration (allows reconfiguration)."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
 
     async def async_step_init(
         self,
