@@ -52,6 +52,10 @@ READ_TO_SET_MODE = {
     airodor.VentilationModeRead.ONE_DIR_MAX: (airodor.VentilationModeSet.ONE_DIR_MAX),
     airodor.VentilationModeRead.INSIDE_MED: (airodor.VentilationModeSet.INSIDE_MED),
     airodor.VentilationModeRead.INSIDE_MAX: (airodor.VentilationModeSet.INSIDE_MAX),
+    # Timer-aktiv und unbekannt → "Off" ist der nächstliegende Zustand
+    airodor.VentilationModeRead.TIMED_OFF: airodor.VentilationModeSet.OFF,
+    airodor.VentilationModeRead.TIMED_OFF_UNKNOWN: airodor.VentilationModeSet.OFF,
+    airodor.VentilationModeRead.UNKNOWN: airodor.VentilationModeSet.OFF,
 }
 
 ENTITY_DESCRIPTIONS = (
@@ -143,14 +147,25 @@ class AirodorModeSelect(AirodorWifiEntity, SelectEntity):
         mode_key = self.entity_description.key
         if mode_key == "mode_a":
             group = airodor.VentilationGroup.A
+            current_read_mode = (self.coordinator.data or {}).get("mode_a")
         else:
             group = airodor.VentilationGroup.B
+            current_read_mode = (self.coordinator.data or {}).get("mode_b")
+
+        client = self.coordinator.config_entry.runtime_data.client
+
+        # If a timer is active, cancel it first by setting timer to 0, then
+        # wait briefly for the device to leave the TIMED_OFF state before
+        # applying the desired mode.
+        if current_read_mode in (
+            airodor.VentilationModeRead.TIMED_OFF,
+            airodor.VentilationModeRead.TIMED_OFF_UNKNOWN,
+        ):
+            await client.async_set_timer(group=group, hours=0)
+            await asyncio.sleep(3)
 
         # Set the mode via the API client
-        await self.coordinator.config_entry.runtime_data.client.async_set_mode(
-            group=group,
-            mode=mode_enum,
-        )
+        await client.async_set_mode(group=group, mode=mode_enum)
 
         # Refresh the coordinator data immediately
         await self.coordinator.async_request_refresh()

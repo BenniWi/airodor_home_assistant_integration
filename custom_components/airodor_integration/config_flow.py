@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import ipaddress
-
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers import selector
@@ -20,11 +18,13 @@ from .const import (
     CONF_DEVICE_NAME,
     CONF_GROUP_A_NAME,
     CONF_GROUP_B_NAME,
-    CONF_IP_ADDRESS,
+    CONF_HOST,
+    CONF_PORT,
     CONF_UPDATE_INTERVAL,
     DEFAULT_DEVICE_NAME,
     DEFAULT_GROUP_A_NAME,
     DEFAULT_GROUP_B_NAME,
+    DEFAULT_PORT,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
     LOGGER,
@@ -50,29 +50,26 @@ class AirodorWifiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
-            try:
-                await self._test_credentials(
-                    ip_address=user_input[CONF_IP_ADDRESS],
-                )
-            except UnicodeError as exception:
-                LOGGER.warning(exception)
-                _errors["base"] = "invalid_ip"
-            except AirodorWifiApiClientCommunicationError as exception:
-                LOGGER.error(exception)
-                _errors["base"] = "connection"
-            except AirodorWifiApiClientError as exception:
-                LOGGER.exception(exception)
-                _errors["base"] = "unknown"
+            host = user_input[CONF_HOST].strip()
+            port = int(user_input.get(CONF_PORT, DEFAULT_PORT))
+            if not host:
+                _errors["base"] = "invalid_host"
             else:
-                await self.async_set_unique_id(
-                    # Use IP address as unique ID
-                    unique_id=user_input[CONF_IP_ADDRESS]
-                )
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(
-                    title=user_input.get(CONF_DEVICE_NAME, DEFAULT_DEVICE_NAME),
-                    data=user_input,
-                )
+                try:
+                    await self._test_credentials(host=host, port=port)
+                except AirodorWifiApiClientCommunicationError as exception:
+                    LOGGER.error(exception)
+                    _errors["base"] = "connection"
+                except AirodorWifiApiClientError as exception:
+                    LOGGER.exception(exception)
+                    _errors["base"] = "unknown"
+                else:
+                    await self.async_set_unique_id(f"{host}:{port}")
+                    self._abort_if_unique_id_configured()
+                    return self.async_create_entry(
+                        title=user_input.get(CONF_DEVICE_NAME, DEFAULT_DEVICE_NAME),
+                        data={**user_input, CONF_HOST: host, CONF_PORT: port},
+                    )
 
         integration = async_get_loaded_integration(self.hass, DOMAIN)
         assert integration.documentation is not None, (  # noqa: S101
@@ -87,11 +84,22 @@ class AirodorWifiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(
-                        CONF_IP_ADDRESS,
-                        default=(user_input or {}).get(CONF_IP_ADDRESS, vol.UNDEFINED),
+                        CONF_HOST,
+                        default=(user_input or {}).get(CONF_HOST, vol.UNDEFINED),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT,
+                        ),
+                    ),
+                    vol.Optional(
+                        CONF_PORT,
+                        default=(user_input or {}).get(CONF_PORT, DEFAULT_PORT),
+                    ): selector.NumberSelector(
+                        selector.NumberSelectorConfig(
+                            min=1,
+                            max=65535,
+                            step=1,
+                            mode=selector.NumberSelectorMode.BOX,
                         ),
                     ),
                     vol.Optional(
@@ -147,18 +155,11 @@ class AirodorWifiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=_errors,
         )
 
-    async def _test_credentials(self, ip_address: str) -> None:
-        """Validate IP address and connectivity."""
-        # Validate IP address format
-        try:
-            ipaddress.ip_address(ip_address)
-        except ValueError as exception:
-            msg = f"Invalid IP address format: {ip_address}"
-            raise UnicodeError(msg) from exception
-
-        # Test connectivity
+    async def _test_credentials(self, host: str, port: int) -> None:
+        """Test connectivity to the device."""
         client = AirodorWifiApiClient(
-            ip_address=ip_address,
+            host=host,
+            port=port,
             session=async_create_clientsession(self.hass),
         )
         await client.async_get_data()

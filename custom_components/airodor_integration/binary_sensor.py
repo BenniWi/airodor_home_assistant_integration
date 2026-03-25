@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 
 ENTITY_DESCRIPTIONS = (
     BinarySensorEntityDescription(
-        key="airodor_wifi",
-        name="Airodor Wifi Binary Sensor",
+        key="connectivity",
+        translation_key="connectivity",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
     ),
 )
@@ -35,7 +35,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up the binary_sensor platform."""
     async_add_entities(
-        AirodorWifiBinarySensor(
+        AirodorWifiConnectivitySensor(
             coordinator=entry.runtime_data.coordinator,
             entity_description=entity_description,
         )
@@ -43,19 +43,20 @@ async def async_setup_entry(
     )
 
 
-class AirodorWifiBinarySensor(AirodorWifiEntity, BinarySensorEntity):
-    """Airodor Wifi binary_sensor class."""
+class AirodorWifiConnectivitySensor(AirodorWifiEntity, BinarySensorEntity):
+    """Binary sensor reporting whether the Airodor WiFi device is reachable."""
 
     def __init__(
         self,
         coordinator: AirodorWifiDataUpdateCoordinator,
         entity_description: BinarySensorEntityDescription,
     ) -> None:
-        """Initialize the binary_sensor class."""
-        super().__init__(coordinator)
-        self.entity_description = entity_description
+        """Initialize the connectivity sensor."""
+        super().__init__(coordinator, entity_description)
 
     @property
     def is_on(self) -> bool:
-        """Return true if the binary_sensor is on."""
-        return self.coordinator.data.get("title", "") == "foo"
+        """Return True when the last coordinator update succeeded."""
+        return (
+            self.coordinator.last_update_success and self.coordinator.data is not None
+        )

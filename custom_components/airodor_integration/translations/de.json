@@ -4,7 +4,7 @@
             "user": {
                 "description": "Wenn du Hilfe bei der Konfiguration brauchst, schau hier: {documentation_url}",
                 "data": {
-                    "ip_address": "IP-Adresse",
+                    "ip_address": "Host / IP-Adresse (optional mit Port, z.B. 192.168.1.10 oder geraet:8866)",
                     "update_interval": "Aktualisierungsintervall (Minuten)",
                     "device_name": "Gerätename",
                     "area": "Bereich (optional)",
@@ -14,7 +14,8 @@
             }
         },
         "error": {
-            "invalid_ip": "Ungültiges IP-Adressformat.",
+            "invalid_host": "Host darf nicht leer sein.",
+            "invalid_ip": "Ungültiger Host oder ungültige IP-Adresse.",
             "connection": "Verbindung zum Gerät fehlgeschlagen.",
             "unknown": "Ein unbekannter Fehler ist aufgetreten."
         },
@@ -23,43 +24,14 @@
         }
     },
     "entity": {
+        "binary_sensor": {
+            "connectivity": {
+                "name": "Geräteverbindung"
+            }
+        },
         "button": {
             "refresh": {
                 "name": "Aktualisieren"
-            }
-        },
-        "sensor": {
-            "mode_a": {
-                "name": "Lüftungsmodus Gruppe A",
-                "state": {
-                    "off": "Aus",
-                    "alternating_min": "Min - Alternierend",
-                    "alternating_med": "Med - Alternierend",
-                    "alternating_med_forced": "Med - Alternierend (⚠️ Modus überschrieben)",
-                    "alternating_max": "Max - Alternierend",
-                    "one_dir_med": "Med - Eine Richtung",
-                    "one_dir_max": "Max - Eine Richtung",
-                    "inside_med": "Med - Nur nach innen",
-                    "inside_max": "Max - Nur nach innen",
-                    "timed_off": "Aus (⚠️ Timer hat Modus überschrieben)",
-                    "unknown": "Unbekannt"
-                }
-            },
-            "mode_b": {
-                "name": "Lüftungsmodus Gruppe B",
-                "state": {
-                    "off": "Aus",
-                    "alternating_min": "Min - Alternierend",
-                    "alternating_med": "Med - Alternierend",
-                    "alternating_med_forced": "Med - Alternierend (⚠️ Modus überschrieben)",
-                    "alternating_max": "Max - Alternierend",
-                    "one_dir_med": "Med - Eine Richtung",
-                    "one_dir_max": "Max - Eine Richtung",
-                    "inside_med": "Med - Nur nach innen",
-                    "inside_max": "Max - Nur nach innen",
-                    "timed_off": "Aus (⚠️ Timer hat Modus überschrieben)",
-                    "unknown": "Unbekannt"
-                }
             }
         },
         "select": {
@@ -88,6 +60,52 @@
                     "inside_med": "Med - Nur nach innen",
                     "inside_max": "Max - Nur nach innen"
                 }
+            }
+        },
+        "sensor": {
+            "mode_a": {
+                "name": "Lüftungsmodus Gruppe A",
+                "state": {
+                    "off": "Aus",
+                    "alternating_min": "Min - Alternierend",
+                    "alternating_med": "Med - Alternierend",
+                    "alternating_med_forced": "Med - Alternierend (⚠️ Modus überschrieben)",
+                    "alternating_max": "Max - Alternierend",
+                    "one_dir_med": "Med - Eine Richtung",
+                    "one_dir_max": "Max - Eine Richtung",
+                    "inside_med": "Med - Nur nach innen",
+                    "inside_max": "Max - Nur nach innen",
+                    "timed_off": "Aus (Timer aktiv)"
+                }
+            },
+            "mode_b": {
+                "name": "Lüftungsmodus Gruppe B",
+                "state": {
+                    "off": "Aus",
+                    "alternating_min": "Min - Alternierend",
+                    "alternating_med": "Med - Alternierend",
+                    "alternating_med_forced": "Med - Alternierend (\u26a0\ufe0f Modus \u00fcberschrieben)",
+                    "alternating_max": "Max - Alternierend",
+                    "one_dir_med": "Med - Eine Richtung",
+                    "one_dir_max": "Max - Eine Richtung",
+                    "inside_med": "Med - Nur nach innen",
+                    "inside_max": "Max - Nur nach innen",
+                    "timed_off": "Aus (Timer aktiv)"
+                }
+            },
+            "timer_a": {
+                "name": "Timer läuft ab um (Gruppe A)"
+            },
+            "timer_b": {
+                "name": "Timer läuft ab um (Gruppe B)"
+            }
+        },
+        "number": {
+            "set_timer_a": {
+                "name": "Timer setzen Gruppe A"
+            },
+            "set_timer_b": {
+                "name": "Timer setzen Gruppe B"
             }
         }
     }
