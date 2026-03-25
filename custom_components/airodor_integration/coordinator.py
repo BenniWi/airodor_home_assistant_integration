@@ -13,6 +13,7 @@ from .api import (
     AirodorWifiApiClientAuthenticationError,
     AirodorWifiApiClientError,
 )
+from .const import TIMER_GRACE_PERIOD_SECONDS
 
 if TYPE_CHECKING:
     from .data import AirodorWifiConfigEntry
@@ -50,21 +51,21 @@ class AirodorWifiDataUpdateCoordinator(DataUpdateCoordinator):
             if data.get("mode_a") not in (
                 airodor.VentilationModeRead.TIMED_OFF,
                 airodor.VentilationModeRead.TIMED_OFF_UNKNOWN,
+            ) and (
+                self.timer_a_set_at is None
+                or (now - self.timer_a_set_at).total_seconds()
+                > TIMER_GRACE_PERIOD_SECONDS
             ):
-                if (
-                    self.timer_a_set_at is None
-                    or (now - self.timer_a_set_at).total_seconds() > 30
-                ):
-                    self.timer_a_set_at = None
-                    self.timer_a_set_value = None
+                self.timer_a_set_at = None
+                self.timer_a_set_value = None
             if data.get("mode_b") not in (
                 airodor.VentilationModeRead.TIMED_OFF,
                 airodor.VentilationModeRead.TIMED_OFF_UNKNOWN,
+            ) and (
+                self.timer_b_set_at is None
+                or (now - self.timer_b_set_at).total_seconds()
+                > TIMER_GRACE_PERIOD_SECONDS
             ):
-                if (
-                    self.timer_b_set_at is None
-                    or (now - self.timer_b_set_at).total_seconds() > 30
-                ):
-                    self.timer_b_set_at = None
-                    self.timer_b_set_value = None
+                self.timer_b_set_at = None
+                self.timer_b_set_value = None
             return data
