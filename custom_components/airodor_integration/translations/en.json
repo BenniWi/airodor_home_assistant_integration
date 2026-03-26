@@ -23,6 +23,25 @@
             "already_configured": "This entry is already configured."
         }
     },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "host": "Host / IP Address",
+                    "port": "Port",
+                    "update_interval": "Update Interval (minutes)",
+                    "device_name": "Device Name",
+                    "group_a_name": "Name for Group A",
+                    "group_b_name": "Name for Group B"
+                }
+            }
+        },
+        "error": {
+            "invalid_host": "Host must not be empty.",
+            "connection": "Unable to connect to the device.",
+            "unknown": "Unknown error occurred."
+        }
+    },
     "entity": {
         "binary_sensor": {
             "connectivity": {

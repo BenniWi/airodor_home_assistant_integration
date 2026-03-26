@@ -173,23 +173,65 @@ class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
         user_input: dict | None = None,
     ) -> config_entries.ConfigFlowResult:
         """Handle options flow."""
+        _errors = {}
         if user_input is not None:
-            # Merge updated options into entry data and trigger reload
-            self.hass.config_entries.async_update_entry(
-                self.config_entry,
-                data={**self.config_entry.data, **user_input},
-            )
-            await self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            return self.async_create_entry(title="", data={})
+            host = user_input[CONF_HOST].strip()
+            port = int(user_input.get(CONF_PORT, DEFAULT_PORT))
+            if not host:
+                _errors["base"] = "invalid_host"
+            else:
+                try:
+                    await self._test_credentials(host=host, port=port)
+                except AirodorWifiApiClientCommunicationError as exception:
+                    LOGGER.error(exception)
+                    _errors["base"] = "connection"
+                except AirodorWifiApiClientError as exception:
+                    LOGGER.exception(exception)
+                    _errors["base"] = "unknown"
+                else:
+                    # Merge updated options into entry data and trigger reload
+                    updated = {
+                        **self.config_entry.data,
+                        **user_input,
+                        CONF_HOST: host,
+                        CONF_PORT: port,
+                    }
+                    self.hass.config_entries.async_update_entry(
+                        self.config_entry,
+                        data=updated,
+                    )
+                    await self.hass.config_entries.async_reload(
+                        self.config_entry.entry_id
+                    )
+                    return self.async_create_entry(title="", data={})
 
         current = self.config_entry.data
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
+                    vol.Required(
+                        CONF_HOST,
+                        default=(user_input or current).get(CONF_HOST, vol.UNDEFINED),
+                    ): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.TEXT,
+                        ),
+                    ),
+                    vol.Optional(
+                        CONF_PORT,
+                        default=(user_input or current).get(CONF_PORT, DEFAULT_PORT),
+                    ): selector.NumberSelector(
+                        selector.NumberSelectorConfig(
+                            min=1,
+                            max=65535,
+                            step=1,
+                            mode=selector.NumberSelectorMode.BOX,
+                        ),
+                    ),
                     vol.Optional(
                         CONF_UPDATE_INTERVAL,
-                        default=current.get(
+                        default=(user_input or current).get(
                             CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
                         ),
                     ): selector.NumberSelector(
@@ -203,7 +245,9 @@ class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                     vol.Optional(
                         CONF_DEVICE_NAME,
-                        default=current.get(CONF_DEVICE_NAME, DEFAULT_DEVICE_NAME),
+                        default=(user_input or current).get(
+                            CONF_DEVICE_NAME, DEFAULT_DEVICE_NAME
+                        ),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT,
@@ -211,7 +255,9 @@ class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                     vol.Optional(
                         CONF_GROUP_A_NAME,
-                        default=current.get(CONF_GROUP_A_NAME, DEFAULT_GROUP_A_NAME),
+                        default=(user_input or current).get(
+                            CONF_GROUP_A_NAME, DEFAULT_GROUP_A_NAME
+                        ),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT,
@@ -219,7 +265,9 @@ class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                     vol.Optional(
                         CONF_GROUP_B_NAME,
-                        default=current.get(CONF_GROUP_B_NAME, DEFAULT_GROUP_B_NAME),
+                        default=(user_input or current).get(
+                            CONF_GROUP_B_NAME, DEFAULT_GROUP_B_NAME
+                        ),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT,
@@ -227,4 +275,14 @@ class AirodorWifiOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                 },
             ),
+            errors=_errors,
         )
+
+    async def _test_credentials(self, host: str, port: int) -> None:
+        """Test connectivity to the device."""
+        client = AirodorWifiApiClient(
+            host=host,
+            port=port,
+            session=async_create_clientsession(self.hass),
+        )
+        await client.async_get_data()

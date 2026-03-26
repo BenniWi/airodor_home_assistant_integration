@@ -23,6 +23,25 @@
             "already_configured": "Dieser Eintrag ist bereits konfiguriert."
         }
     },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "host": "Host / IP-Adresse",
+                    "port": "Port",
+                    "update_interval": "Aktualisierungsintervall (Minuten)",
+                    "device_name": "Gerätename",
+                    "group_a_name": "Name für Gruppe A",
+                    "group_b_name": "Name für Gruppe B"
+                }
+            }
+        },
+        "error": {
+            "invalid_host": "Host darf nicht leer sein.",
+            "connection": "Verbindung zum Gerät fehlgeschlagen.",
+            "unknown": "Ein unbekannter Fehler ist aufgetreten."
+        }
+    },
     "entity": {
         "binary_sensor": {
             "connectivity": {
